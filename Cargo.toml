@@ -1,0 +1,29 @@
+[package]
+name = "rusty_proxy"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+#	异步运行时	Rust 异步生态的事实标准，性能极高，社区最活跃。
+tokio = { version = "1.50.0", features = ["full","rt", "rt-multi-thread", "macros"] }
+#HTTP 服务	底层 HTTP 实现，Axum 的基础。用它更能体现对协议的理解。
+#HTTP 客户端		服务端和客户端用同一个库，类型系统一致，减少依赖。
+hyper= { version = "1.8.1", features = ["full"] }
+#配置管理		Rust 最强的序列化库，用 TOML 写配置比 JSON 更适合人工阅读。
+serde = { version = "1.0.228", features = ["derive"] }
+toml="1.1.0+spec-1.1.0"
+#日志系统		比 println! 高级得多，支持结构化日志，生产环境必备。
+tracing="0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt"] }
+#错误处理		库内部用 thiserror 定义错误，应用层用 anyhow 传播错误。
+thiserror="2.0.18"
+anyhow="1.0.102"
+#字节处理	零拷贝字节处理，网络编程性能优化的关键。
+bytes="1.11.1"
+clap = { version = "4.6.0", features = ["derive"] }
+num_cpus = "1.17.0"
+
+
+[[bin]]
+name = "rusty_proxy-server"
+path = "src/bin/server.rs"

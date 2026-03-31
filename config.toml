@@ -1,0 +1,23 @@
+# 基础配置
+app_name = "rusty_proxy"
+version = "0.1.0"
+debug = true
+
+# 服务器配置
+[server]
+#0.0.0.0表示接受所有地址请求
+host = "0.0.0.0"
+port = 8080
+workers = 4
+
+# 代理目标（数组）
+[[proxies]]
+name = "api_service"
+target = "http://localhost:3000"
+timeout = 30
+
+[[proxies]]
+name = "web_service"
+target = "http://localhost:3001"
+timeout = 60
+

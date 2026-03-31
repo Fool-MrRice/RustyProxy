@@ -1,0 +1,35 @@
+[2m2026-03-31T11:24:02.749075Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m96:[0m 程序启动，日志将同时输出到控制台和 app.log 文件
+[2m2026-03-31T11:24:02.749579Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m20:[0m 应用: rusty_proxy v0.1.0
+[2m2026-03-31T11:24:02.749690Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m21:[0m 应用: rusty_proxy v0.1.0
+[2m2026-03-31T11:24:02.749810Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m22:[0m 监听: 0.0.0.0:8080
+[2m2026-03-31T11:24:02.749921Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 代理 [api_service] -> http://localhost:3000 (超时 30s)
+[2m2026-03-31T11:24:02.750383Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 代理 [web_service] -> http://localhost:3001 (超时 60s)
+[2m2026-03-31T11:24:02.750971Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m35:[0m 最终host和port是: 0.0.0.0和8080
+[2m2026-03-31T11:43:36.226761Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m96:[0m 程序启动，日志将同时输出到控制台和 app.log 文件
+[2m2026-03-31T11:43:36.273831Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m20:[0m 应用: rusty_proxy v0.1.0
+[2m2026-03-31T11:43:36.273925Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m21:[0m 应用: rusty_proxy v0.1.0
+[2m2026-03-31T11:43:36.274013Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m22:[0m 监听: 0.0.0.0:8080
+[2m2026-03-31T11:43:36.274087Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 代理 [api_service] -> http://localhost:3000 (超时 30s)
+[2m2026-03-31T11:43:36.274161Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 代理 [web_service] -> http://localhost:3001 (超时 60s)
+[2m2026-03-31T11:43:36.274797Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m35:[0m 最终host和port是: 192.168.1.1和443
+[2m2026-03-31T12:07:53.416214Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m100:[0m 程序启动，日志将同时输出到控制台和 app.log 文件
+[2m2026-03-31T12:07:53.434075Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m20:[0m 应用: rusty_proxy v0.1.0
+[2m2026-03-31T12:07:53.434214Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m21:[0m 应用: rusty_proxy v0.1.0
+[2m2026-03-31T12:07:53.434305Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m22:[0m 监听: 0.0.0.0:8080
+[2m2026-03-31T12:07:53.434380Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 代理 [api_service] -> http://localhost:3000 (超时 30s)
+[2m2026-03-31T12:07:53.434475Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 代理 [web_service] -> http://localhost:3001 (超时 60s)
+[2m2026-03-31T12:07:53.435326Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m35:[0m 最终host和port是: 192.168.1.1和443
+[2m2026-03-31T12:07:53.435708Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m38:[0m use bytes crate, ok!
+[2m2026-03-31T12:07:53.435945Z[0m [32m INFO[0m ThreadId(01) [1minfo_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m180:[0m ℹ️  [INFO] 信息级别日志
+[2m2026-03-31T12:07:53.436064Z[0m [32m INFO[0m ThreadId(01) [1minfo_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m181:[0m ℹ️  [INFO] 场景：服务启停、请求处理、业务关键节点
+[2m2026-03-31T12:07:53.436148Z[0m [32m INFO[0m ThreadId(01) [1minfo_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m182:[0m ℹ️  [INFO] 示例：HTTP 请求处理完成，耗时 150ms
+[2m2026-03-31T12:07:53.436267Z[0m [32m INFO[0m ThreadId(01) [1minfo_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m183:[0m ℹ️  [INFO] 生产环境建议：默认开启 (默认级别)
+[2m2026-03-31T12:07:53.436384Z[0m [33m WARN[0m ThreadId(01) [1mwarn_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m194:[0m ⚠️  [WARN] 警告级别日志
+[2m2026-03-31T12:07:53.436457Z[0m [33m WARN[0m ThreadId(01) [1mwarn_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m195:[0m ⚠️  [WARN] 场景：非致命错误、自动降级、重试成功
+[2m2026-03-31T12:07:53.436521Z[0m [33m WARN[0m ThreadId(01) [1mwarn_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m196:[0m ⚠️  [WARN] 示例：数据库连接超时，已切换到备用节点
+[2m2026-03-31T12:07:53.436584Z[0m [33m WARN[0m ThreadId(01) [1mwarn_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m197:[0m ⚠️  [WARN] 生产环境建议：开启 (需要关注但无需立即处理)
+[2m2026-03-31T12:07:53.436661Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m208:[0m ❌ [ERROR] 错误级别日志
+[2m2026-03-31T12:07:53.436726Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m209:[0m ❌ [ERROR] 场景：操作失败、系统异常、需要人工介入
+[2m2026-03-31T12:07:53.436830Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m210:[0m ❌ [ERROR] 示例：数据库连接失败，错误码=CONNECTION_REFUSED
+[2m2026-03-31T12:07:53.436908Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m211:[0m ❌ [ERROR] 生产环境建议：必须开启 (需要报警和监控)
+[2m2026-03-31T12:07:53.437022Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m215:[0m ❌ [ERROR] 错误链示例：模拟一个业务错误
