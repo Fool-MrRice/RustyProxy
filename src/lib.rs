@@ -1,7 +1,7 @@
 // 库导出 (方便测试)
 
 mod upstream;
-mod server;
+pub mod server;
 mod proxy;
 mod error;
 pub mod config;

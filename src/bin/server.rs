@@ -3,6 +3,9 @@
 
 use clap::Parser;
 use std::fs::OpenOptions;
+use std::net::SocketAddr;
+use tokio::net::TcpListener;
+use tokio::signal;
 use tracing::{debug, error, info, span, trace, warn, Level};
 use rusty_proxy::config::Config;
 use tracing_subscriber::{
@@ -11,6 +14,8 @@ use tracing_subscriber::{
     EnvFilter,
     Registry,
 };
+use rusty_proxy::server;
+
 #[tokio::main]
 pub async fn main() -> rusty_proxy::Result<()> {
     set_up_logging()?;
@@ -21,10 +26,7 @@ pub async fn main() -> rusty_proxy::Result<()> {
     info!("应用: {} v{}", config.app_name, config.version);
     info!("监听: {}:{}", config.server.host, config.server.port);
 
-    for proxy in &config.proxies {
-        info!("代理 [{}] -> {} (超时 {}s)",
-                 proxy.name, proxy.target, proxy.timeout);
-    }
+
 
     // 从命令行中读取启动信息
     let cli = Cli::parse();
@@ -34,14 +36,15 @@ pub async fn main() -> rusty_proxy::Result<()> {
 
     info!("最终host和port是: {}和{}", host,port);
 
-    bytes_example();
-    info!("use bytes crate, ok!");
-    tracing_example();
+    // Bind a TCP listener
+    let addr:SocketAddr =format!("{}:{}",host, port).parse()?;
+    let listener = TcpListener::bind(addr).await?;
+    // let listener = TcpListener::bind(&format!("{}:{}",host, port)).await?;
 
-    // // Bind a TCP listener
-    // let listener = TcpListener::bind(&format!("127.0.0.1:{}", port)).await?;
-    //
-    // server::run(listener, signal::ctrl_c()).await;
+    server::run(
+        listener,
+        async { let _ = signal::ctrl_c().await; },
+    ).await?;
 
     Ok(())
 }
@@ -75,7 +78,7 @@ fn set_up_logging() -> rusty_proxy::Result<()> {
         .pretty();
 
     // 3. 创建文件 Layer
-    // 将输出重定向到文件，通常文件日志不需要太花哨的格式，或者使用 JSON
+    // 将输出重定向到文件
     let file_layer = fmt::layer()
         .with_target(true)
         .with_thread_ids(true)
@@ -100,8 +103,10 @@ fn set_up_logging() -> rusty_proxy::Result<()> {
     tracing::info!("程序启动，日志将同时输出到控制台和 app.log 文件");
     Ok(())
 }
-use bytes::{Bytes, BytesMut, Buf, BufMut};
+
+#[cfg(any())]
 fn bytes_example() {
+    use bytes::{Bytes, BytesMut, Buf, BufMut};
     // 1. 从静态字符串或 Vec 创建 (零拷贝)
     let b1 = Bytes::from("Hello, World!");
     let b2 = Bytes::from(vec![1, 2, 3]);
@@ -128,6 +133,7 @@ fn bytes_example() {
     let s = std::str::from_utf8(&frozen).unwrap();
     println!("{:?}", s);
 }
+#[cfg(any())]
 fn tracing_example(){
     test_trace_level();
     test_debug_level();
@@ -146,6 +152,7 @@ fn tracing_example(){
 /// - 含义：最详细的追踪信息
 /// - 场景：函数入口/出口、循环迭代、变量中间值、性能剖析
 /// - 生产环境：通常关闭
+#[cfg(any())]
 fn test_trace_level() {
     let _span = span!(Level::TRACE, "trace_test").entered();
 
@@ -160,6 +167,7 @@ fn test_trace_level() {
 /// - 含义：调试信息
 /// - 场景：开发调试、参数验证、分支逻辑、中间状态
 /// - 生产环境：排查问题时临时开启
+#[cfg(any())]
 fn test_debug_level() {
     let _span = span!(Level::DEBUG, "debug_test").entered();
 
@@ -174,6 +182,7 @@ fn test_debug_level() {
 /// - 含义：一般运行信息
 /// - 场景：服务启动/停止、请求完成、定时任务、关键业务流程
 /// - 生产环境：默认开启
+#[cfg(any())]
 fn test_info_level() {
     let _span = span!(Level::INFO, "info_test").entered();
 
@@ -188,6 +197,7 @@ fn test_info_level() {
 /// - 含义：警告信息
 /// - 场景：非致命错误、降级处理、重试成功、配置缺失
 /// - 生产环境：开启 (需要关注)
+#[cfg(any())]
 fn test_warn_level() {
     let _span = span!(Level::WARN, "warn_test").entered();
 
@@ -202,6 +212,7 @@ fn test_warn_level() {
 /// - 含义：错误信息
 /// - 场景：操作失败、需要人工介入、系统异常、数据损坏
 /// - 生产环境：必须开启 (需要报警)
+#[cfg(any())]
 fn test_error_level() {
     let _span = span!(Level::ERROR, "error_test").entered();
 
@@ -218,6 +229,7 @@ fn test_error_level() {
 // ==================== Span 跨度测试 ====================
 /// **Span 测试**
 /// 演示不同级别的 Span 如何影响日志输出
+#[cfg(any())]
 fn test_span_with_level() {
     info!("📊 开始测试 Span 跨度");
 
@@ -241,6 +253,7 @@ fn test_span_with_level() {
 // ==================== 结构化字段测试 ====================
 /// **结构化字段测试**
 /// 演示 tracing 的结构化日志能力
+#[cfg(any())]
 fn test_structured_fields() {
     info!("📝 开始测试结构化字段");
 

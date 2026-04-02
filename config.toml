@@ -12,12 +12,12 @@ workers = 4
 
 # 代理目标（数组）
 [[proxies]]
-name = "api_service"
+name = "service_1"
 target = "http://localhost:3000"
 timeout = 30
 
 [[proxies]]
-name = "web_service"
+name = "service_2"
 target = "http://localhost:3001"
 timeout = 60
 

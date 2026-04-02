@@ -16,6 +16,9 @@ pub enum MyLibError {
 
     #[error("IO 操作失败")]
     ConfigLoadError(#[from] toml::de::Error),
+    
+    #[error("地址解析失败: {0}")]
+    AddrParse(#[from] std::net::AddrParseError), 
 
 
     // 如果不需要自动 From，只想记录来源
