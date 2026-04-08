@@ -33,3 +33,67 @@
 [2m2026-03-31T12:07:53.436830Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m210:[0m ❌ [ERROR] 示例：数据库连接失败，错误码=CONNECTION_REFUSED
 [2m2026-03-31T12:07:53.436908Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m211:[0m ❌ [ERROR] 生产环境建议：必须开启 (需要报警和监控)
 [2m2026-03-31T12:07:53.437022Z[0m [31mERROR[0m ThreadId(01) [1merror_test[0m[2m:[0m [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m215:[0m ❌ [ERROR] 错误链示例：模拟一个业务错误
+[2m2026-04-03T02:45:18.445682Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m103:[0m 程序启动，日志将同时输出到控制台和 app.log 文件
+[2m2026-04-03T02:45:18.477235Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 应用: rusty_proxy v0.1.0
+[2m2026-04-03T02:45:18.477333Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m26:[0m 应用: rusty_proxy v0.1.0
+[2m2026-04-03T02:45:18.477405Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m27:[0m 监听: 0.0.0.0:8080
+[2m2026-04-03T02:45:18.477932Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m37:[0m 最终host和port是: 0.0.0.0和8080
+[2m2026-04-03T02:45:18.479545Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m20:[0m starting running server
+[2m2026-04-03T02:46:18.996150Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:2054
+[2m2026-04-03T02:46:18.999826Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:2321
+[2m2026-04-03T02:46:19.000254Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:7872
+[2m2026-04-03T02:46:20.028751Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:1480
+[2m2026-04-03T02:46:20.029361Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:7446
+[2m2026-04-03T02:46:21.056855Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:10583
+[2m2026-04-03T02:46:21.057157Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:2977
+[2m2026-04-03T02:46:26.070374Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:11829
+[2m2026-04-03T02:46:26.071144Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:5827
+[2m2026-04-03T02:46:27.087471Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:1114
+[2m2026-04-03T02:46:27.088038Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:2727
+[2m2026-04-03T02:46:32.101534Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:13061
+[2m2026-04-03T02:46:32.102193Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:6605
+[2m2026-04-03T02:47:25.121423Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:3018
+[2m2026-04-03T02:47:25.123830Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:3388
+[2m2026-04-03T02:47:25.124319Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:6788
+[2m2026-04-03T02:47:26.149393Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:8027
+[2m2026-04-03T02:47:26.151217Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:10307
+[2m2026-04-03T02:47:26.151617Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:8369
+[2m2026-04-03T02:47:28.688205Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:14493
+[2m2026-04-03T02:47:28.688659Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:12400
+[2m2026-04-03T02:47:29.714757Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:5081
+[2m2026-04-03T02:47:29.715144Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m48:[0m 📡 New connection from 127.0.0.1:11883
+[2m2026-04-03T02:47:35.404173Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m75:[0m 🛑 Shutdown signal received, stopping accept loop
+[2m2026-04-03T02:47:35.404287Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m85:[0m 🔄 Draining 23 active connections...
+[2m2026-04-03T02:47:35.404407Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.404586Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.404711Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.404835Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.404940Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405031Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405171Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405272Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405368Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405439Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405508Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405570Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405641Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405704Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405813Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.405923Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406020Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406121Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406208Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406320Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406419Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406480Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406537Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m99:[0m ⚠️  Connection task panicked: Any { .. }
+[2m2026-04-03T02:47:35.406607Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m106:[0m ✨ All connections drained, shutdown complete
+[2m2026-04-04T07:50:48.827916Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m106:[0m 程序启动，日志将同时输出到控制台和 app.log 文件
+[2m2026-04-04T07:50:48.828511Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m25:[0m 应用: rusty_proxy v0.1.0
+[2m2026-04-04T07:50:48.828581Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m26:[0m 应用: rusty_proxy v0.1.0
+[2m2026-04-04T07:50:48.828643Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m27:[0m 监听: 0.0.0.0:8080
+[2m2026-04-04T07:50:48.829188Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy_server[0m[2m:[0m [2msrc\bin\server.rs[0m[2m:[0m[2m37:[0m 最终host和port是: 0.0.0.0和8080
+[2m2026-04-04T07:50:48.830843Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m26:[0m starting running server
+[2m2026-04-04T07:55:08.006479Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m86:[0m 🛑 Shutdown signal received, stopping accept loop
+[2m2026-04-04T07:55:08.006614Z[0m [32m INFO[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m96:[0m 🔄 Draining 0 active connections...
+[2m2026-04-04T07:55:38.015351Z[0m [33m WARN[0m ThreadId(01) [2mrusty_proxy::server[0m[2m:[0m [2msrc\server.rs[0m[2m:[0m[2m124:[0m ⏰ Drain timeout (30s), forcing shutdown of 0 remaining connections

@@ -1,9 +1,9 @@
 // 库导出 (方便测试)
 
-mod upstream;
+pub mod upstream;
 pub mod server;
-mod proxy;
-mod error;
+pub mod proxy;
+pub mod error;
 pub mod config;
 pub use config::Config;
 use crate::error::MyLibError;

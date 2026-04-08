@@ -54,9 +54,16 @@ impl Config {
         let config: Config = toml::from_str(&content)?;
         Ok(config)
     }
-    pub fn from_file_get_proxies<P: AsRef<Path>>(path: P) -> crate::Result<Vec<Proxy>> {
+    pub fn from_file_get_proxies_string<P: AsRef<Path>>(path: P) -> crate::Result<Vec<String>> {
         let content = fs::read_to_string(path)?;
         let config: Config = toml::from_str(&content)?;
-        Ok(config.proxies)
+        let vec_proxies_string:Vec<String> =
+            config
+                .proxies
+                .into_iter()
+                .map(|p| p.target)
+                .collect();
+
+        Ok(vec_proxies_string)
     }
 }

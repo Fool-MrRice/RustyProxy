@@ -1,20 +1,19 @@
-
 // 初始化 tokio 运行时，读取 config.toml，创建 UpstreamManager，启动 Server
 
 use clap::Parser;
+use rusty_proxy::config::Config;
+use rusty_proxy::{server, upstream};
 use std::fs::OpenOptions;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tokio::signal;
-use tracing::{debug, error, info, span, trace, warn, Level};
-use rusty_proxy::config::Config;
+use tracing::info;
 use tracing_subscriber::{
-    fmt,
-    prelude::*, // 必须导入，否则 .with() 方法不可用
     EnvFilter,
     Registry,
+    fmt,
+    prelude::*, // 必须导入，否则 .with() 方法不可用
 };
-use rusty_proxy::server;
 
 #[tokio::main]
 pub async fn main() -> rusty_proxy::Result<()> {
@@ -26,47 +25,52 @@ pub async fn main() -> rusty_proxy::Result<()> {
     info!("应用: {} v{}", config.app_name, config.version);
     info!("监听: {}:{}", config.server.host, config.server.port);
 
-
-
     // 从命令行中读取启动信息
     let cli = Cli::parse();
     // 解析启动信息
     let host = cli.host.unwrap_or(config.server.host);
     let port = cli.port.unwrap_or(config.server.port);
 
-    info!("最终host和port是: {}和{}", host,port);
+    info!("最终host和port是: {}和{}", host, port);
 
-    // Bind a TCP listener
-    let addr:SocketAddr =format!("{}:{}",host, port).parse()?;
+    // Bind a TCP listener，监听指定host和port（客户端连接）
+    let addr: SocketAddr = format!("{}:{}", host, port).parse()?;
     let listener = TcpListener::bind(addr).await?;
     // let listener = TcpListener::bind(&format!("{}:{}",host, port)).await?;
 
+    // 创建 UpstreamManager，从config.toml中读取上游服务器列表，用于管理上游服务器连接
+    let upstream_manager =
+        upstream::Manager::new(Config::from_file_get_proxies_string("config.toml")?);
+    // 启动 Server，监听客户端连接，处理请求，将请求转发到上游服务器
     server::run(
         listener,
-        async { let _ = signal::ctrl_c().await; },
-    ).await?;
+        async {
+            let _ = signal::ctrl_c().await;
+        },
+        upstream_manager,
+    )
+    .await?;
 
     Ok(())
 }
 // #[command(name = "rusty_proxy-server", version, author, about = "A  server")]
 #[derive(Parser, Debug)]
-#[command(name = "rusty_proxy-server",  about = "A Reverse Proxy Server")]
+#[command(name = "rusty_proxy-server", about = "A Reverse Proxy Server")]
 struct Cli {
     #[arg(long)]
-    host:Option<String>,
+    host: Option<String>,
     #[arg(long)]
     port: Option<u16>,
 }
 
-
 fn set_up_logging() -> rusty_proxy::Result<()> {
-
     // 1. 创建app.log日志文件
     let log_file = OpenOptions::new()
         .create(true)
         .write(true)
         .append(true)
-        .open("app.log").expect("Could not open log file");
+        .open("app.log")
+        .expect("Could not open log file");
 
     // 2. 创建控制台 Layer
     // 可以单独配置控制台的格式，例如使用 pretty 模式
@@ -88,8 +92,8 @@ fn set_up_logging() -> rusty_proxy::Result<()> {
 
     // 4. 创建过滤层 (EnvFilter)
     // 允许通过 RUST_LOG 环境变量控制日志级别
-    let filter_layer = EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| "info,my_crate=debug".into());
+    let filter_layer =
+        EnvFilter::try_from_default_env().unwrap_or_else(|_| "info,my_crate=debug".into());
 
     // 5. 组装并初始化
     // 使用 Registry 作为基础，挂载所有 Layer
@@ -106,7 +110,7 @@ fn set_up_logging() -> rusty_proxy::Result<()> {
 
 #[cfg(any())]
 fn bytes_example() {
-    use bytes::{Bytes, BytesMut, Buf, BufMut};
+    use bytes::{Buf, BufMut, Bytes, BytesMut};
     // 1. 从静态字符串或 Vec 创建 (零拷贝)
     let b1 = Bytes::from("Hello, World!");
     let b2 = Bytes::from(vec![1, 2, 3]);
@@ -134,18 +138,13 @@ fn bytes_example() {
     println!("{:?}", s);
 }
 #[cfg(any())]
-fn tracing_example(){
+fn tracing_example() {
     test_trace_level();
     test_debug_level();
     test_info_level();
     test_warn_level();
     test_error_level();
 }
-
-
-
-
-
 
 // ==================== TRACE 级别 ====================
 /// **TRACE 级别**
@@ -173,7 +172,10 @@ fn test_debug_level() {
 
     debug!("🐛 [DEBUG] 调试级别日志");
     debug!("🐛 [DEBUG] 场景：开发调试、参数检查、逻辑分支");
-    debug!("🐛 [DEBUG] 示例：用户输入参数 user_id={}, action={}", 123, "login");
+    debug!(
+        "🐛 [DEBUG] 示例：用户输入参数 user_id={}, action={}",
+        123, "login"
+    );
     debug!("🐛 [DEBUG] 生产环境建议：排查问题时临时开启");
 }
 
@@ -218,7 +220,10 @@ fn test_error_level() {
 
     error!("❌ [ERROR] 错误级别日志");
     error!("❌ [ERROR] 场景：操作失败、系统异常、需要人工介入");
-    error!("❌ [ERROR] 示例：数据库连接失败，错误码={}", "CONNECTION_REFUSED");
+    error!(
+        "❌ [ERROR] 示例：数据库连接失败，错误码={}",
+        "CONNECTION_REFUSED"
+    );
     error!("❌ [ERROR] 生产环境建议：必须开启 (需要报警和监控)");
 
     // 演示错误链 (配合 anyhow)
@@ -258,11 +263,7 @@ fn test_structured_fields() {
     info!("📝 开始测试结构化字段");
 
     // 基本字段
-    info!(
-        user_id = 12345,
-        action = "login",
-        "用户登录成功"
-    );
+    info!(user_id = 12345, action = "login", "用户登录成功");
 
     // 带类型的字段
     info!(
@@ -276,7 +277,5 @@ fn test_structured_fields() {
     let path = "/api/users";
     info!(path = %path, "访问路径");
 
-
     info!("📝 结构化字段测试完成");
 }
-

@@ -3,6 +3,7 @@
 use thiserror::Error;
 use std::io;
 
+
 // 1. 定义错误枚举
 #[derive(Error, Debug)]
 pub enum MyLibError {
@@ -14,27 +15,27 @@ pub enum MyLibError {
     #[error("IO 操作失败")]
     Io(#[from] io::Error),
 
-    #[error("IO 操作失败")]
+    #[error("config load 失败")]
     ConfigLoadError(#[from] toml::de::Error),
     
     #[error("地址解析失败: {0}")]
-    AddrParse(#[from] std::net::AddrParseError), 
+    AddrParse(#[from] std::net::AddrParseError),
+
+    #[error("hyper失败")]
+    HyperError(#[from] hyper::Error),
+
+    #[error("No upstream server available")]
+    NoUpstream,
+
+    #[error("Upstream request failed: {0}")]
+    UpstreamRequest(#[from] hyper_util::client::legacy::Error),
+
+    #[error("HTTP build failed: {0}")]
+    HttpBuild(#[from] http::Error),
+
 
 
     // 如果不需要自动 From，只想记录来源
     #[error("未知错误")]
-    Unknown(#[source] Box<dyn std::error::Error + Send + Sync>),
+    Unknown(#[source] Box<dyn std::error::Error + Send + Sync+'static>),
 }
-
-// // 2. 在库函数中使用
-// pub fn read_config(path: &str) -> Result<String, MyLibError> {
-//     // 不需要手动 map_error，#[from] 会自动处理 ? 转换
-//     let content = std::fs::read_to_string(path)?;
-//
-//     if content.is_empty() {
-//         // 返回自定义错误
-//         return Err(MyLibError::MissingConfig("data".to_string()));
-//     }
-//
-//     Ok(content)
-// }

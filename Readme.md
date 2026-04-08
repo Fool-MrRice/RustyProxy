@@ -1,193 +1,454 @@
-# 🚀 RustyProxy 项目指南 - 第一阶段 (Phase 1)
+# RustyProxy - 异步 HTTP 反向代理
 
-欢迎来到 **RustyProxy** 的第一阶段开发！这份文档不仅是项目的说明书，更是你的**学习地图**。我们的目标是构建一个**最小可用的高并发 HTTP 反向代理/负载均衡器**。
+基于 Rust + Tokio + Hyper 构建的高性能 HTTP 反向代理服务器，支持多上游轮询负载均衡。
 
-不要担心代码细节，先理解**架构设计**和**核心概念**。理解了“为什么这么做”，写代码只是翻译过程。
+***
 
----
+## 目录
 
-## 1. 项目概述 (What & Why)
+- [架构概览](#架构概览)
+- [模块职责与调用关系](#模块职责与调用关系)
+- [快速开始](#快速开始)
+- [配置说明](#配置说明)
+- [开发指南](#开发指南)
+- [故障排查](#故障排查)
 
-### 🎯 我们要做什么？
-想象你是一个**餐厅服务员**（代理服务器）：
-1.  顾客（客户端）进来点菜（发送 HTTP 请求）。
-2.  你不做菜，你把单子交给后厨的某个厨师（上游服务器）。
-3.  厨师做好菜，你端给顾客（返回 HTTP 响应）。
-4.  如果有多个厨师，你需要决定把单子给谁（负载均衡）。
+***
 
-### 💼 为什么这个项目能帮你找实习？
-*   **网络编程：** 证明你懂 TCP/IP、HTTP 协议。
-*   **并发模型：** 证明你懂 Rust 的 `async/await` 和 `Tokio` 运行时。
-*   **系统设计：** 证明你有模块化思维，知道如何拆分功能。
-*   ** Rust 特性：** 证明你能处理所有权、生命周期和错误处理。
+## 架构概览
 
----
+### 程序运行流程图
 
-## 2. 核心概念小白课 (Theory 101)
-
-在写代码前，必须搞懂这三个词：
-
-### 🅰️ 反向代理 (Reverse Proxy)
-*   **正向代理：** 你帮客户访问互联网（客户知道代理，目标服务器不知道）。
-*   **反向代理：** 你帮服务器接收请求（客户不知道代理，以为直接访问了服务器）。
-*   **本项目角色：** 我们是反向代理。客户端请求 `http://rusty-proxy.com`，实际处理的是后端的 `http://localhost:8081`。
-
-### 🅱️ 负载均衡 (Load Balancing)
-*   **问题：** 如果只有一个后端，它挂了怎么办？它忙不过来怎么办？
-*   **解决：** 准备一堆后端服务器（上游集群），代理服务器把请求**均匀分配**给它们。
-*   **算法（Phase 1 目标）：** **轮询 (Round Robin)**。第一个请求给服务器 A，第二个给 B，第三个给 C，第四个又回到 A。
-
-### 🅾️ 上游与下游 (Upstream & Downstream)
-*   **下游 (Downstream)：** 发起请求的人（客户端/浏览器）。
-*   **上游 (Upstream)：** 真正干活的人（后端 API 服务）。
-*   **代理 (Proxy)：** 中间的中间商（我们写的 RustyProxy）。
-
----
-
-## 3. 技术栈选型 (The Tools)
-
-我们只选**工业界标准**库，这样面试时才有的聊。
-
-| 类别 | 推荐 Crate | 为什么选它？ (面试话术) |
-| :--- | :--- | :--- |
-| **异步运行时** | `tokio` | Rust 异步生态的事实标准，性能极高，社区最活跃。 |
-| **HTTP 服务** | `hyper` | 底层 HTTP 实现，Axum 的基础。用它更能体现对协议的理解。 |
-| **HTTP 客户端** | `hyper` (client) | 服务端和客户端用同一个库，类型系统一致，减少依赖。 |
-| **配置管理** | `serde` + `toml` |  Rust 最强的序列化库，用 TOML 写配置比 JSON 更适合人工阅读。 |
-| **日志系统** | `tracing` + `tracing-subscriber` | 比 `println!` 高级得多，支持结构化日志，生产环境必备。 |
-| **错误处理** | `thiserror` + `anyhow` | 库内部用 `thiserror` 定义错误，应用层用 `anyhow` 传播错误。 |
-| **字节处理** | `bytes` | 零拷贝字节处理，网络编程性能优化的关键。 |
-
----
-
-## 4. 项目结构蓝图 (The Blueprint)
-
-不要把所有代码塞进 `main.rs`！良好的结构是可维护性的基础。
-
-```text
-rusty-proxy/
-├── Cargo.toml          # 依赖清单 (项目的"购物清单")
-├── config.toml         # 配置文件 (定义上游服务器地址)
-├── src/
-│   ├── main.rs         # 入口：初始化日志、加载配置、启动服务器
-│   ├── lib.rs          # 库导出 (方便测试)
-│   ├── server.rs       # 服务端：监听端口，接受 TCP 连接
-│   ├── proxy.rs        # 核心逻辑：转发请求到上游，接收响应
-│   ├── upstream.rs     # 上游管理：存储服务器列表，实现轮询算法
-│   ├── config.rs       # 配置加载：读取 config.toml
-│   └── error.rs        # 错误定义：统一项目中的错误类型
-└── tests/              # 集成测试 (后续阶段添加)
+```
+客户端 (Browser/cURL)
+        │
+        │ HTTP Request
+        ▼
+┌──────────────────────────────────────────────────────────┐
+│                    TcpListener (8080)                     │
+│                      监听新连接                            │
+└──────────────────────┬───────────────────────────────────┘
+                       │ accept()
+                       ▼
+┌──────────────────────────────────────────────────────────┐
+│              JoinSet (连接任务池)                          │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
+│  │ Connection 1│  │ Connection 2│  │ Connection N│  ...  │
+│  │  (async task)│  │  (async task)│  │  (async task)│       │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘       │
+│         │                │                │               │
+│         ▼                ▼                ▼               │
+│  ┌─────────────────────────────────────────────────┐     │
+│  │          handle_each_connection()                │     │
+│  │  ┌───────────────────────────────────────────┐  │     │
+│  │  │  http1::serve_connection()                │  │     │
+│  │  │  └─ service_fn(|req|)                     │  │     │
+│  │  │     └─ async move { do_proxy() }          │  │     │
+│  │  └───────────────────────────────────────────┘  │     │
+│  └──────────────────────┬──────────────────────────┘     │
+│                         │                                │
+│                         ▼                                │
+│              ┌────────────────────┐                      │
+│              │   do_proxy()       │                      │
+│              │  1. 选择上游        │                      │
+│              │  2. 构建请求        │                      │
+│              │  3. 转发请求体      │                      │
+│              │  4. 发送上游        │                      │
+│              │  5. 返回响应        │                      │
+│              └────────┬───────────┘                      │
+│                       │                                  │
+└───────────────────────┼──────────────────────────────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  upstream::Manager   │
+              │  (轮询调度器)         │
+              │  get_next() → addr   │
+              └────────┬────────────┘
+                       │
+                       ▼
+              ┌─────────────────────┐
+              │   上游服务器         │
+              │   http://localhost  │
+              │   :3000 / :3001     │
+              └─────────────────────┘
 ```
 
-### 📂 模块职责详解
+### 并发模型
 
-1.  **`main.rs` (指挥官)**
-    *   不负责具体业务。
-    *   负责：初始化 `tokio` 运行时，读取 `config.toml`，创建 `UpstreamManager`，启动 `Server`。
-2.  **`server.rs` (接待员)**
-    *   负责：绑定 TCP 端口 (如 8080)，无限循环 `accept` 新连接。
-    *   关键点：每接受一个连接，就 `tokio::spawn` 一个新任务去处理，实现并发。
-3.  **`upstream.rs` (调度员)**
-    *   负责：维护一个上游地址列表 `Vec<String>`。
-    *   关键点：提供一个 `get_next_upstream()` 方法，内部用原子计数器实现轮询。需要线程安全 (`Arc + Mutex` 或 `AtomicUsize`)。
-4.  **`proxy.rs` (传送带)**
-    *   负责：最核心的逻辑。
-    *   流程：读取客户端请求 -> 修改 Host 头 -> 发给上游 -> 读取上游响应 -> 返回给客户端。
-5.  **`config.rs` (记事本)**
-    *   负责：定义配置结构体，用 `serde` 解析文件。
-
----
-
-## 5. 核心交互逻辑 (The Flow)
-
-这是面试时你要在白板上画出来的图。请仔细理解数据流向。
-
-### 🔄 请求处理流程图
-
-```text
-[ 客户端 Client ] 
-      |
-      | 1. 发起 HTTP 请求 (GET /api/users)
-      v
-[  RustyProxy  ] <--- 监听端口 8080
-      |
-      | 2. Server 接受连接，spawn 任务
-      v
-[  Proxy 逻辑  ]
-      |
-      | 3. 询问 UpstreamManager: "下一个发给谁？"
-      v
-[ Upstream 列表 ] ---> 返回 "http://localhost:8081"
-      |
-      | 4. 建立新连接，转发请求 (修改 Host 头)
-      v
-[  上游服务器  ] <--- 真实业务逻辑 (返回 JSON)
-      |
-      | 5. 接收响应
-      v
-[  Proxy 逻辑  ]
-      |
-      | 6. 将响应原样写回客户端
-      v
-[  客户端 Client ] <--- 收到响应，显示页面
+```
+主任务 (run)
+├── tokio::select! 循环
+│   ├── listener.accept()  → 新连接到达
+│   │   └── connections.spawn(handle_and_log(...))
+│   │       └── 独立异步任务，并发处理
+│   └── shutdown signal    → 优雅关闭
+│       ├── 停止 accept
+│       ├── 等待已有任务完成 (join_next)
+│       └── 30s 超时强制终止 (abort_all)
 ```
 
-### ⚠️ 关键细节 (面试考点)
+***
 
-1.  **连接复用：**
-    *   * naive 做法：* 每次请求都新建 TCP 连接给上游（慢，握手开销大）。
-    *   * 优化做法：* 使用 `hyper::Client` 的连接池，保持与上游的长连接。
-2.  **Host 头修改：**
-    *   客户端请求的是 `rusty-proxy.com`，但上游服务器可能只认识 `localhost:8081`。
-    *   转发前，必须修改 HTTP Header 中的 `Host` 字段，否则上游可能返回 404。
-3.  **流式传输 (Streaming)：**
-    *   不要等整个响应body读完再发给客户端。
-    *   要**边读边发**（Stream），这样大文件下载时内存不会爆，首字节延迟也低。
+## 模块职责与调用关系
 
----
+### 文件结构
 
-## 6. 第一阶段开发 checklist
+```
+src/
+├── bin/
+│   ├── server.rs          # 程序入口 (main)，初始化运行时、日志、配置
+│   └── client.rs          # (占位，待实现)
+├── lib.rs                 # 库根，导出所有模块
+├── config.rs              # 配置加载与解析
+├── upstream.rs            # 上游服务器管理 + 轮询调度
+├── server.rs              # TCP 监听 + 连接管理 + 优雅关闭
+├── proxy.rs               # 核心代理逻辑 (请求转发)
+└── error.rs               # 统一错误定义
+```
 
-按顺序完成以下任务，不要跳步：
+### 模块详细职责
 
-- [ ] **环境准备**：初始化 Cargo 项目，添加上述 Dependencies。
-- [ ] **配置加载**：写一个 `config.toml`，定义 upstream 列表。实现读取它。
-- [ ] **TCP 服务器**：用 `tokio::net::TcpListener` 跑通一个 "收到连接打印 hello" 的 Demo。
-- [ ] **HTTP 解析**：引入 `hyper`，将 TCP 流升级为 HTTP 请求处理。
-- [ ] **上游调度**：实现 `UpstreamManager`，确保多次调用能轮询返回不同地址。
-- [ ] **请求转发**：实现 `proxy.rs`，硬编码一个上游地址，确保能转发成功。
-- [ ] **整合调度**：将硬编码改为调用 `UpstreamManager`。
-- [ ] **日志接入**：把 `println!` 换成 `tracing::info!`，能看到请求日志。
-- [ ] **自测**：用 `curl` 或 浏览器访问你的代理，确认能拿到上游的数据。
+#### `bin/server.rs` — 程序入口
 
----
+**职责**：组装所有组件，启动服务。
 
-## 7. 常见坑与避坑指南 (Pitfalls)
+**执行流程**：
 
-### 🕳️ 坑 1：生命周期与借用
-*   **现象：** 编译器报错 `borrowed value does not live long enough`。
-*   **原因：** 异步任务中引用了临时变量。
-*   **对策：** 尽量使用 `Arc` 共享状态，或者拥有数据的所有权 (`clone()` / `to_owned()`)。在异步边界，所有权比借用更安全。
+1. 初始化 tracing 日志系统（控制台 + 文件双输出）
+2. 解析 CLI 参数（`--host`、`--port`）
+3. 加载 `config.toml` 配置
+4. 绑定 TCP 监听器
+5. 创建 `upstream::Manager`（上游服务器列表）
+6. 调用 `server::run()` 进入主事件循环
+7. 监听 `Ctrl+C` 信号触发优雅关闭
 
-### 🕳️ 坑 2：阻塞运行时
-*   **现象：** 服务器突然不响应了，即使 CPU 没满。
-*   **原因：** 在 `async` 函数里做了同步阻塞操作（如同步文件 IO、复杂计算）。
-*   **对策：** 确保所有 IO 都是 `tokio::net` 或 `tokio::fs`。如果有计算，用 `tokio::task::spawn_blocking`。
+***
 
-### 🕳️ 坑 3：错误吞噬
-*   **现象：** 请求失败了，但日志什么都没打印。
-*   **原因：** 用了 `.unwrap()` 或者忽略了 `Result`。
-*   **对策：** 使用 `?` 操作符传播错误，并在最顶层统一记录日志。
+#### `config.rs` — 配置层
 
----
+**职责**：定义配置结构体，从 TOML 文件加载配置。
 
-## 8. 下一步行动 (Next Step)
+**核心类型**：
 
-你现在不需要写代码，只需要**确认理解**。
+| 类型             | 说明                                        |
+| -------------- | ----------------------------------------- |
+| `Config`       | 顶层配置（app\_name, version, server, proxies） |
+| `ServerConfig` | 服务器配置（host, port, workers）                |
+| `Proxy`        | 单个代理目标（name, target, timeout）             |
 
-1.  **阅读本 README** 确保每个概念都懂。
-2.  **初始化仓库**：`cargo new rusty-proxy --lib`。
-3.  **配置依赖**：把 `Cargo.toml` 填好。
-4.  **回复我**：告诉我你准备好了，我们将开始 **Step 1: 搭建项目骨架与配置加载**。
+**核心方法**：
 
-加油！这个项目做完，你的简历上就会有非常扎实的一笔。🔥
+- `Config::from_file(path)` → 解析 TOML 返回 `Config`
+- `Config::from_file_get_proxies_string(path)` → 提取所有 upstream 地址 `Vec<String>`
+
+***
+
+#### `upstream.rs` — 上游调度器
+
+**职责**：管理上游服务器列表，提供轮询负载均衡。
+
+**核心类型**：
+
+| 类型        | 说明                 |
+| --------- | ------------------ |
+| `Manager` | 上游管理器，包含地址列表和原子计数器 |
+
+**核心方法**：
+
+- `Manager::new(addresses)` → 创建实例
+- `Manager::get_next()` → 返回下一个上游地址（原子递增 + 取模 = 无锁轮询）
+
+**线程安全**：使用 `AtomicUsize` 实现无锁轮询，无需 `Mutex`。
+
+***
+
+#### `server.rs` — 连接管理层
+
+**职责**：监听 TCP 端口，接受连接，为每个连接 spawn 异步任务，实现优雅关闭。
+
+**核心函数**：
+
+| 函数                                                 | 说明                                       |
+| -------------------------------------------------- | ---------------------------------------- |
+| `run(listener, shutdown, upstream_manager)`        | 主事件循环，accept + select! + 优雅关闭            |
+| `handle_each_connection(io, client, upstream_mgr)` | 处理单个 HTTP 连接（hyper serve\_connection）    |
+| `handle_and_log(...)`                              | 辅助函数，包装 `handle_each_connection` 并记录错误日志 |
+
+**关键设计**：
+
+- 使用 `JoinSet` 跟踪所有连接任务（而非裸 `tokio::spawn`），支持等待完成
+- `tokio::select!` 同时监听新连接和关闭信号
+- 关闭时先停止 accept，再 `join_next` 等待已有任务，30s 超时强制终止
+
+***
+
+#### `proxy.rs` — 核心代理逻辑
+
+**职责**：将客户端请求转发到上游服务器，并将上游响应透传回客户端。
+
+**核心函数**：
+
+| 函数                                    | 说明      |
+| ------------------------------------- | ------- |
+| `do_proxy(req, client, upstream_mgr)` | 完整的代理流程 |
+
+**代理流程（6 步）**：
+
+1. **选择上游**：`upstream_mgr.get_next()` 获取上游地址
+2. **构建请求**：复制方法、URI、版本，转发除 `host` 和 `connection` 外的所有头
+3. **设置 Host 头**：从上游地址提取 host 并设置
+4. **转发请求体**：`req.into_body().boxed()` 零拷贝透传
+5. **发送上游**：`client.request(proxied_req).await`
+6. **返回响应**：复制状态码、版本、头，body 使用上游响应的 `Incoming` 流
+
+***
+
+#### `error.rs` — 错误定义
+
+**职责**：统一项目错误类型。
+
+**核心类型**：
+
+| 变体                                                   | 说明             |
+| ---------------------------------------------------- | -------------- |
+| `MissingConfig(String)`                              | 配置字段缺失         |
+| `Io(io::Error)`                                      | IO 错误（自动 From） |
+| `ConfigLoadError(toml::de::Error)`                   | TOML 解析错误      |
+| `AddrParse(AddrParseError)`                          | 地址解析错误         |
+| `HyperError(hyper::Error)`                           | Hyper 错误       |
+| `NoUpstream`                                         | 无可用上游服务器       |
+| `UpstreamRequest(hyper_util::client::legacy::Error)` | 上游请求失败         |
+| `HttpBuild(http::Error)`                             | HTTP 构建失败      |
+| `Unknown(Box<dyn Error + Send + Sync>)`              | 未知错误           |
+
+***
+
+### 模块调用关系图
+
+```
+bin/server.rs (main)
+    │
+    ├──► config.rs
+    │       └── Config::from_file()
+    │       └── Config::from_file_get_proxies_string()
+    │
+    ├──► upstream.rs
+    │       └── Manager::new(addresses)
+    │
+    └──► server.rs
+            └── run(listener, shutdown, upstream_manager)
+                    │
+                    ├──► JoinSet.spawn(handle_and_log(...))
+                    │       │
+                    │       └──► handle_each_connection()
+                    │               │
+                    │               └──► http1::serve_connection()
+                    │                       └── service_fn(|req|)
+                    │                               └──► proxy.rs::do_proxy()
+                    │                                       │
+                    │                                       ├──► upstream_mgr.get_next()
+                    │                                       └──► client.request()
+                    │
+                    └──► shutdown 信号处理
+                            └── join_next() / abort_all()
+```
+
+***
+
+## 快速开始
+
+### 环境要求
+
+| 工具    | 版本                   |
+| ----- | -------------------- |
+| Rust  | 1.85+ (Edition 2024) |
+| Cargo | 最新稳定版                |
+
+### 编译
+
+```bash
+cargo build
+```
+
+### 运行
+
+**方式一：使用默认配置**
+
+```bash
+cargo run --bin rusty_proxy-server
+```
+
+**方式二：指定 host 和 port**
+
+```bash
+cargo run --bin rusty_proxy-server -- --host 0.0.0.0 --port 9090
+```
+
+命令行参数会覆盖 `config.toml` 中的 `server.host` 和 `server.port`。
+
+### 验证
+
+启动后，向代理发送请求：
+
+```bash
+# 假设上游服务运行在 localhost:3000
+curl http://localhost:8080/api/test
+```
+
+### 停止
+
+按 `Ctrl+C` 触发优雅关闭：
+
+1. 停止接受新连接
+2. 等待已有连接处理完成（最长 30 秒）
+3. 超时后强制终止剩余连接
+
+***
+
+## 配置说明
+
+### `config.toml`
+
+```toml
+# 基础配置
+app_name = "rusty_proxy"
+version = "0.1.0"
+debug = true
+
+# 服务器配置
+[server]
+host = "0.0.0.0"    # 0.0.0.0 接受所有地址，127.0.0.1 仅本地
+port = 8080         # 监听端口
+workers = 4         # 工作线程数（默认 = CPU 核心数）
+
+# 代理目标（数组，支持多个上游）
+[[proxies]]
+name = "service_1"
+target = "http://localhost:3000"
+timeout = 30
+
+[[proxies]]
+name = "service_2"
+target = "http://localhost:3001"
+timeout = 60
+```
+
+### 配置字段说明
+
+| 字段                  | 类型     | 默认值           | 说明             |
+| ------------------- | ------ | ------------- | -------------- |
+| `server.host`       | String | `"127.0.0.1"` | 绑定地址           |
+| `server.port`       | u16    | `8080`        | 绑定端口           |
+| `server.workers`    | usize  | CPU 核心数       | Tokio 工作线程数    |
+| `proxies[].name`    | String | 必填            | 上游名称（仅用于日志）    |
+| `proxies[].target`  | String | 必填            | 上游地址（必须带协议头）   |
+| `proxies[].timeout` | u64    | `30`          | 超时秒数（当前未使用，预留） |
+
+***
+
+## 开发指南
+
+### 添加新的上游服务器
+
+编辑 `config.toml`，添加新的 `[[proxies]]` 块：
+
+```toml
+[[proxies]]
+name = "service_3"
+target = "http://localhost:3002"
+timeout = 45
+```
+
+重启服务即可生效（当前不支持热重载配置）。
+
+### 添加新的错误类型
+
+在 `src/error.rs` 的 `MyLibError` 枚举中添加变体：
+
+```rust
+#[error("自定义错误描述")]
+MyNewError(#[from] SomeOtherError),
+```
+
+使用 `#[from]` 属性可自动实现 `From` trait，支持 `?` 操作符。
+
+### 修改代理逻辑
+
+核心逻辑在 `src/proxy.rs::do_proxy()` 函数中。常见修改点：
+
+| 需求       | 修改位置                             |
+| -------- | -------------------------------- |
+| 添加请求头    | 步骤 2 的 `for` 循环后                 |
+| 修改响应头    | 步骤 5-6 的 `resp_builder` 构建中      |
+| 负载均衡策略   | `src/upstream.rs::get_next()` 方法 |
+| 请求/响应体转换 | 步骤 3 的 `.boxed()` 前后             |
+
+### 日志级别控制
+
+通过 `RUST_LOG` 环境变量控制日志级别：
+
+```bash
+# Windows PowerShell
+$env:RUST_LOG="debug"
+cargo run --bin rusty_proxy-server
+
+# 仅查看特定模块
+$env:RUST_LOG="rusty_proxy::proxy=debug,rusty_proxy::server=info"
+```
+
+日志同时输出到：
+
+- **控制台**：带颜色、pretty 格式
+- **文件**：`app.log`（追加模式）
+
+### 运行测试
+
+```bash
+cargo test
+```
+
+当前 `tests/` 目录为空，待补充集成测试。
+
+***
+
+## 故障排查
+
+### 编译错误
+
+| 错误                                             | 原因                              | 解决                                     |
+| ---------------------------------------------- | ------------------------------- | -------------------------------------- |
+| `implementation of From is not general enough` | 异步闭包中 `Box<dyn Error>` 生命周期推导失败 | 使用 `anyhow::Error` 替代 `Box<dyn Error>` |
+| `no method named with_upgrades`                | 缺少 `mut` 或 hyper 版本不匹配          | 确保 `http_conn` 可变，检查 `hyper` 版本        |
+
+### 运行时问题
+
+| 现象              | 可能原因           | 解决                                 |
+| --------------- | -------------- | ---------------------------------- |
+| 连接被拒绝           | 上游服务未启动        | 确认 `config.toml` 中的 upstream 地址可访问 |
+| 502 Bad Gateway | 上游服务器不可达       | 检查网络连接和防火墙规则                       |
+| 日志无输出           | `RUST_LOG` 未设置 | 设置 `RUST_LOG=info` 或删除环境变量使用默认值    |
+
+### 性能调优
+
+| 参数    | 调整方式                                        |
+| ----- | ------------------------------------------- |
+| 并发连接数 | Tokio 默认自适应，可通过 `TOKIO_WORKER_THREADS` 覆盖   |
+| 缓冲区大小 | 修改 `bytes::BytesMut::with_capacity()` 参数    |
+| 超时时间  | 调整 `server.rs` 中的 `Duration::from_secs(30)` |
+
+***
+
+## 技术栈
+
+| 组件      | 库                            | 版本               |
+| ------- | ---------------------------- | ---------------- |
+| 异步运行时   | tokio                        | 1.50.0           |
+| HTTP 协议 | hyper                        | 1.9.0            |
+| HTTP 工具 | hyper-util                   | 0.1.20           |
+| 配置解析    | toml + serde                 | 1.1.0 / 1.0.228  |
+| 日志系统    | tracing + tracing-subscriber | 0.1.44 / 0.3.23  |
+| 错误处理    | thiserror + anyhow           | 2.0.18 / 1.0.102 |
+| CLI 解析  | clap                         | 4.6.0            |
+| 字节处理    | bytes                        | 1.11.1           |
+
